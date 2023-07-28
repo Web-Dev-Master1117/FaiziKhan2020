@@ -5,12 +5,15 @@ const HtmlToReact = require("html-to-react").Parser;
 
 const PageComponent = () => {
   const [data, setData] = useState([]);
+  const [id, setId] = useState("");
   const htmlToReactParser = new HtmlToReact();
 
-  const currentURL = window.location.href;
-  const searchParams = new URLSearchParams(window.location.search);
-  const itemId = searchParams.get("itemId");
-  console.log(itemId);
+  useEffect(() => {
+    const currentURL = window.location.href;
+    const searchParams = new URLSearchParams(window.location.search);
+    const itemId = searchParams.get("itemId");
+    setId(itemId);
+  }, []);
 
   useEffect(() => {
     const fetchBags = async () => {
@@ -29,7 +32,7 @@ const PageComponent = () => {
   return (
     <div>
       {data
-        .filter((item) => item.id === itemId)
+        .filter((item) => item.id === id)
         .map((filteredItem, index) => (
           <>
             {" "}
