@@ -101,14 +101,16 @@ export default function Home() {
           </Box>
         </Modal>
       </div>
-      <Container maxWidth="md" sx={{ mt: 2 }}>
+      <Container
+        sx={{ mt: 5 }}
+        style={{ display: "flex", justifyContent: "center" }}
+      >
         <TextField
           id="search"
           type="search"
           label="Search"
           value={searchTerm}
           onChange={handleChange}
-          sx={{ width: 600 }}
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
@@ -132,10 +134,10 @@ export default function Home() {
               return ( */}
             {data.map((item, index) => {
               return (
-                <Grid item md={4}>
+                <Grid item md={4} sm={12}>
                   <Card
                     sx={{
-                      Width: "800px",
+                      Width: "100%",
                       height: "30rem",
                     }}
                   >
@@ -147,6 +149,7 @@ export default function Home() {
                     >
                       <CardContent>
                         <Image
+                          style={{ width: "100%", height: "100%" }}
                           src={item.image}
                           width={380}
                           height={450}
