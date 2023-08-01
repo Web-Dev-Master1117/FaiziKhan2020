@@ -10,6 +10,7 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Axios from "axios";
 import Router from "next/router";
+import ClipLoader from "react-spinners/ClipLoader";
 
 import Pic4 from "../app/fullemail.png";
 import Link from "next/link";
@@ -19,15 +20,6 @@ import Modal from "@mui/material/Modal";
 import Image from "next/image";
 
 const HtmlToReact = require("html-to-react").Parser;
-
-const bull = (
-  <Box
-    component="span"
-    sx={{ display: "inline-block", mx: "2px", transform: "scale(0.8)" }}
-  >
-    •
-  </Box>
-);
 
 const style = {
   position: "absolute",
@@ -47,6 +39,7 @@ export default function Home() {
   const [searchTerm, setSearchTerm] = useState("");
   const [data, setData] = useState([]);
   const [open, setOpen] = React.useState(false);
+  const [loading, setLoading] = React.useState(true);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
@@ -62,14 +55,18 @@ export default function Home() {
       try {
         const data = await Axios.get(
           `https://netglow-be-c3c31450198f.herokuapp.com/api/gmail/getAllEmails`
+          // `http://localhost:4000/api/gmail/getAllEmails`
         );
         setData(data.data);
+        setLoading(false);
       } catch (error) {
         console.log(error);
       }
     };
     fetchBags();
   }, []);
+
+  console.log(data);
 
   useEffect(() => {
     const fetchBags = async () => {
@@ -101,70 +98,140 @@ export default function Home() {
           </Box>
         </Modal>
       </div>
-      <Container
-        sx={{ mt: 5 }}
-        style={{ display: "flex", justifyContent: "center" }}
+      <div
+        style={{
+          display: "flex",
+          width: "100%",
+          justifyContent: "space-between",
+          flexWrap: "wrap",
+          background: "white",
+        }}
       >
-        <TextField
-          id="search"
-          type="search"
-          label="Search"
-          value={searchTerm}
-          onChange={handleChange}
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                <SearchIcon />
-              </InputAdornment>
-            ),
-          }}
-        />
+        <div>
+          <h4>Netglow</h4>
+        </div>
+        <div>
+          <TextField
+            style={{ width: "20rem" }}
+            id="search"
+            type="search"
+            label="Search"
+            value={searchTerm}
+            onChange={handleChange}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <SearchIcon />
+                </InputAdornment>
+              ),
+            }}
+          />
+        </div>
+      </div>
+      <Container>
+        {" "}
+        <h3>The Latest Emails from Netglow</h3>
       </Container>
-      <Card style={{ boxShadow: "none", maxWidth: "100%" }}>
+      <Card
+        style={{
+          boxShadow: "none",
+          maxWidth: "100%",
+          background: "transparent",
+        }}
+      >
         <CardContent
           style={{
             display: "flex",
             justifyContent: "center",
-            marginTop: "7rem",
           }}
         >
-          {/* <div>{htmlToReactParser.parse(data[1].content)}</div> */}
-          <Grid maxWidth="lg" container spacing={2}>
-            {/* {data.map((item, index) => {
-              return ( */}
-            {data.map((item, index) => {
-              return (
-                <Grid item md={4} sm={12}>
-                  <Card
-                    sx={{
-                      Width: "100%",
-                      height: "30rem",
-                    }}
-                  >
-                    <Link
-                      href={{
-                        pathname: "/pages/hello",
-                        query: { itemId: item.id },
+          {loading ? (
+            <div style={{ marginTop: "10rem" }}>
+              <ClipLoader
+                loading={loading}
+                size={150}
+                aria-label="Loading Spinner"
+                data-testid="loader"
+              />
+            </div>
+          ) : (
+            <Grid maxWidth="lg" container spacing={2}>
+              {/* {data.map((item, index) => {
+            return ( */}
+              {data
+                .filter((item) =>
+                  item.senderName
+                    .toLowerCase()
+                    .includes(searchTerm.toLowerCase())
+                )
+                .map((item, index) => (
+                  <Grid item md={4} sm={12} spacing={4} key={index}>
+                    <Card
+                      sx={{
+                        Width: "100%",
+                        height: "30rem",
                       }}
                     >
-                      <CardContent>
-                        <Image
-                          style={{ width: "100%", height: "100%" }}
-                          src={item.image}
-                          width={380}
-                          height={450}
-                          alt="Picture of the author"
-                        />
-                      </CardContent>
-                    </Link>
-                  </Card>
-                </Grid>
-              );
-            })}
+                      <div
+                        style={{
+                          display: "flex",
+                          margin: "auto",
+                          flexDirection: "column",
+                        }}
+                      >
+                        <Typography
+                          variant="h3"
+                          style={{
+                            fontSize: "20px",
+                            fontWeight: "700",
+                            textAlign: "center",
+                            marginTop: "12px",
+                          }}
+                        >
+                          {item.senderName}
+                        </Typography>
+                        <Typography
+                          variant="h5"
+                          style={{
+                            fontSize: "15px",
+                            fontWeight: "700",
+                            textAlign: "center",
+                            marginTop: "12px",
+                          }}
+                        >
+                          {item.title}
+                        </Typography>
+                      </div>
+                      <Link
+                        href={{
+                          pathname: "/pages/hello",
+                          query: { itemId: item.id },
+                        }}
+                      >
+                        <CardContent>
+                          {item.image ? (
+                            <Image
+                              style={{ width: "100%", height: "100%" }}
+                              src={item.image}
+                              width={380}
+                              height={450}
+                              alt="Picture of the author"
+                            />
+                          ) : (
+                            <div>
+                              {/* Alternative content or a placeholder image */}
+                            </div>
+                          )}
+                        </CardContent>
+                      </Link>
+                    </Card>
+                  </Grid>
+                ))}
 
-            {/* );
+              {/* );
             })} */}
-          </Grid>
+            </Grid>
+          )}
         </CardContent>
       </Card>
     </>
