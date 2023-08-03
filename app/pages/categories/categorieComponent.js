@@ -35,8 +35,8 @@ const PageComponent = () => {
     const fetchBags = async () => {
       try {
         const data = await Axios.get(
-          //   `https://netglow-be-c3c31450198f.herokuapp.com/api/gmail/getAllEmails`
-          `http://localhost:4000/api/gmail/getAllEmails`
+          `https://netglow-be-c3c31450198f.herokuapp.com/api/gmail/getAllEmails`
+          // `http://localhost:4000/api/gmail/getAllEmails`
         );
         setData(data.data);
         setLoading(false);

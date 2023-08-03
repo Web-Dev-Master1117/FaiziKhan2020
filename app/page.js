@@ -54,8 +54,8 @@ export default function Home() {
     const fetchBags = async () => {
       try {
         const data = await Axios.get(
-          // `https://netglow-be-c3c31450198f.herokuapp.com/api/gmail/getAllEmails`
-          `http://localhost:4000/api/gmail/getAllCategories`
+          `https://netglow-be-c3c31450198f.herokuapp.com/api/gmail/getAllCategories`
+          // `http://localhost:4000/api/gmail/getAllCategories`
         );
         setData(data.data);
         setLoading(false);
