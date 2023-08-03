@@ -38,6 +38,7 @@ import * as React from "react";
 export default function Home() {
   const [searchTerm, setSearchTerm] = useState("");
   const [data, setData] = useState([]);
+  const [emailData, setEmailData] = useState([]);
   const [open, setOpen] = React.useState(false);
   const [loading, setLoading] = React.useState(true);
   const handleOpen = () => setOpen(true);
@@ -65,7 +66,21 @@ export default function Home() {
     };
     fetchBags();
   }, []);
-  console.log(data);
+  useEffect(() => {
+    const fetchBags = async () => {
+      try {
+        const data = await Axios.get(
+          `https://netglow-be-c3c31450198f.herokuapp.com/api/gmail/getAllEmails`
+        );
+        setEmailData(data.data);
+        setLoading(false);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchBags();
+  }, []);
+  console.log(emailData);
 
   useEffect(() => {
     const fetchBags = async () => {
@@ -129,110 +144,142 @@ export default function Home() {
       </div>
       <Container>
         {" "}
-        <h3>The Latest Emails from Netglow</h3>
+        <h3>The categories Emails from Netglow</h3>
       </Container>
-      <Card
-        style={{
-          boxShadow: "none",
-          maxWidth: "100%",
-          background: "transparent",
-        }}
-      >
-        <CardContent
+      {loading ? (
+        <div
           style={{
+            marginTop: "10rem",
             display: "flex",
             justifyContent: "center",
           }}
         >
-          {loading ? (
-            <div style={{ marginTop: "10rem" }}>
-              <ClipLoader
-                loading={loading}
-                size={150}
-                aria-label="Loading Spinner"
-                data-testid="loader"
-              />
-            </div>
-          ) : (
-            <Grid maxWidth="lg" container spacing={2}>
-              {/* {data.map((item, index) => {
-            return ( */}
-              {data
-                .filter((item) =>
-                  item.categoryName
-                    .toLowerCase()
-                    .includes(searchTerm.toLowerCase())
-                )
-                .map((item, index) => (
-                  <Grid item md={4} sm={12} spacing={4} key={index}>
-                    <Link
-                      href={{
-                        pathname: "/pages/categories",
-                        query: { itemId: item.id },
-                      }}
-                    >
-                      <Card
-                        sx={{
-                          Width: "100%",
-                        }}
+          <ClipLoader
+            loading={loading}
+            size={150}
+            aria-label="Loading Spinner"
+            data-testid="loader"
+          />
+        </div>
+      ) : (
+        <Container>
+          {data.map((item, index) => (
+            <Grid item md={12} sm={12} key={index}>
+              <Typography
+                variant="h3"
+                style={{
+                  fontSize: "20px",
+                  fontWeight: "700",
+                  marginTop: "12px",
+                  marginBottom: "20px",
+                }}
+              >
+                {item.categoryName}
+              </Typography>
+              <Card sx={{ width: "100%" }}>
+                <div
+                  style={{
+                    display: "flex",
+                    margin: "auto",
+                    maxWidth: "100%",
+                    overflow: "scroll",
+                    flexDirection: "row",
+                    height: "50%",
+                  }}
+                >
+                  {emailData
+                    .filter(
+                      (filter) =>
+                        filter.categoryId === item.id &&
+                        filter.title
+                          .toLowerCase()
+                          .includes(searchTerm.toLowerCase())
+                    )
+                    .map((filteredItem, filteredIndex) => (
+                      <Grid
+                        columnGap={4}
+                        item
+                        key={filteredIndex}
+                        sm={12}
+                        lg={4}
+                        md={4}
                       >
-                        <div
-                          style={{
-                            display: "flex",
-                            margin: "auto",
-                            flexDirection: "column",
+                        <Link
+                          style={{ textDecoration: "none" }}
+                          href={{
+                            pathname: "/pages/hello",
+                            query: { itemId: filteredItem.id },
                           }}
                         >
-                          <Typography
-                            variant="h3"
-                            style={{
-                              fontSize: "20px",
-                              fontWeight: "700",
-                              textAlign: "center",
-                              marginTop: "12px",
+                          <Card
+                            sx={{
+                              width: "70%",
+                              height: "90%",
+                              paddingLeft: "20px",
+                              marginBottom: "20px",
+                              marginTop: "17px",
+                              marginLeft: "3rem",
+                              border: "3px solid",
                             }}
                           >
-                            {item.categoryName}
-                          </Typography>
-                          <Typography
-                            variant="h5"
-                            style={{
-                              fontSize: "15px",
-                              fontWeight: "700",
-                              textAlign: "center",
-                              marginTop: "12px",
-                            }}
-                          >
-                            {item.title}
-                          </Typography>
-                        </div>
-
-                        <CardContent>
-                          {item.image ? (
-                            <Image
-                              style={{ width: "100%", height: "100%" }}
-                              src={item.image}
-                              width={380}
-                              height={450}
-                              alt="Picture of the author"
-                            />
-                          ) : (
-                            <div>
-                              {/* Alternative content or a placeholder image */}
+                            <div
+                              style={{
+                                display: "flex",
+                                margin: "auto",
+                                flexDirection: "column",
+                              }}
+                            >
+                              <Typography
+                                variant="p"
+                                style={{
+                                  fontSize: "10px",
+                                  marginTop: "12px",
+                                }}
+                              >
+                                {filteredItem.time}
+                              </Typography>
+                              <Typography
+                                variant="h3"
+                                style={{
+                                  fontSize: "20px",
+                                  fontWeight: "700",
+                                  textAlign: "center",
+                                  marginTop: "12px",
+                                }}
+                              >
+                                {filteredItem.senderName}
+                              </Typography>
+                              <Typography
+                                variant="h5"
+                                style={{
+                                  fontSize: "15px",
+                                  fontWeight: "700",
+                                  textAlign: "center",
+                                  marginTop: "12px",
+                                }}
+                              >
+                                {filteredItem.title}
+                              </Typography>
                             </div>
-                          )}
-                        </CardContent>
-                      </Card>
-                    </Link>
-                  </Grid>
-                ))}
-
-              {/* );
-            })} */}
+                            <CardContent>
+                              <Image
+                                style={{ width: "100%", height: "100%" }}
+                                src={filteredItem.image}
+                                width={380}
+                                height={450}
+                                alt="Picture of the author"
+                              />
+                            </CardContent>
+                          </Card>
+                        </Link>
+                      </Grid>
+                    ))}
+                </div>
+              </Card>
             </Grid>
-          )}
-        </CardContent>
-      </Card>
+          ))}
+        </Container>
+      )}
     </>
   );
 }
