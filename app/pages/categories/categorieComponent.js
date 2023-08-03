@@ -1,51 +1,32 @@
 "use client";
-import { Container, InputAdornment, TextField, Grid } from "@mui/material";
-import { useState, useEffect } from "react";
-import SearchIcon from "@mui/icons-material/Search";
-import Box from "@mui/material/Box";
-import Card from "@mui/material/Card";
-import CardActions from "@mui/material/CardActions";
-import CardContent from "@mui/material/CardContent";
-import Button from "@mui/material/Button";
-import Typography from "@mui/material/Typography";
 import Axios from "axios";
-import Router from "next/router";
+import CardContent from "@mui/material/CardContent";
+import Typography from "@mui/material/Typography";
+import Card from "@mui/material/Card";
+import Image from "next/image";
+import SearchIcon from "@mui/icons-material/Search";
+import { Container, InputAdornment, TextField, Grid } from "@mui/material";
+import Link from "next/link";
 import ClipLoader from "react-spinners/ClipLoader";
 
-import Pic4 from "../app/fullemail.png";
-import Link from "next/link";
-
-import Modal from "@mui/material/Modal";
-
-import Image from "next/image";
-
+import { useState, useEffect } from "react";
 const HtmlToReact = require("html-to-react").Parser;
 
-const style = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: 500,
-  height: 800,
-  bgcolor: "background.paper",
-  border: "2px solid #000",
-  boxShadow: 24,
-  p: 4,
-};
-
-import * as React from "react";
-export default function Home() {
-  const [searchTerm, setSearchTerm] = useState("");
+const PageComponent = () => {
   const [data, setData] = useState([]);
-  const [open, setOpen] = React.useState(false);
-  const [loading, setLoading] = React.useState(true);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  const [id, setId] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [loading, setLoading] = useState(true);
 
   const htmlToReactParser = new HtmlToReact();
 
-  console.log(htmlToReactParser);
+  useEffect(() => {
+    const currentURL = window.location.href;
+    const searchParams = new URLSearchParams(window.location.search);
+    const itemId = searchParams.get("itemId");
+    setId(itemId);
+  }, []);
+
   const handleChange = (event) => {
     setSearchTerm(event.target.value);
   };
@@ -54,8 +35,8 @@ export default function Home() {
     const fetchBags = async () => {
       try {
         const data = await Axios.get(
-          // `https://netglow-be-c3c31450198f.herokuapp.com/api/gmail/getAllEmails`
-          `http://localhost:4000/api/gmail/getAllCategories`
+          //   `https://netglow-be-c3c31450198f.herokuapp.com/api/gmail/getAllEmails`
+          `http://localhost:4000/api/gmail/getAllEmails`
         );
         setData(data.data);
         setLoading(false);
@@ -65,38 +46,9 @@ export default function Home() {
     };
     fetchBags();
   }, []);
-  console.log(data);
-
-  useEffect(() => {
-    const fetchBags = async () => {
-      try {
-        window.location.reload();
-      } catch (error) {
-        console.log(error);
-      }
-    };
-  }, []);
-  const [legal, setIllegal] = React.useState("");
 
   return (
-    <>
-      {" "}
-      <div>
-        <Modal
-          open={open}
-          onClose={handleClose}
-          aria-labelledby="modal-modal-title"
-          aria-describedby="modal-modal-description"
-        >
-          <Box sx={style}>
-            <Image
-              src={Pic4}
-              style={{ width: "100%", height: "100%" }}
-              alt="Picture of the author"
-            />
-          </Box>
-        </Modal>
-      </div>
+    <div>
       <div
         style={{
           display: "flex",
@@ -107,7 +59,9 @@ export default function Home() {
         }}
       >
         <div>
-          <h4>Netglow</h4>
+          <Link style={{ textDecoration: "none" }} href={"/"}>
+            <h4>Netglow</h4>
+          </Link>
         </div>
         <div>
           <TextField
@@ -127,10 +81,12 @@ export default function Home() {
           />
         </div>
       </div>
+
       <Container>
         {" "}
         <h3>The Latest Emails from Netglow</h3>
       </Container>
+
       <Card
         style={{
           boxShadow: "none",
@@ -154,28 +110,23 @@ export default function Home() {
               />
             </div>
           ) : (
-            <Grid maxWidth="lg" container spacing={2}>
-              {/* {data.map((item, index) => {
-            return ( */}
+            <Grid container spacing={2} maxWidth="lg">
               {data
-                .filter((item) =>
-                  item.categoryName
-                    .toLowerCase()
-                    .includes(searchTerm.toLowerCase())
+                .filter(
+                  (item) =>
+                    item.categoryId === id &&
+                    item.title.toLowerCase().includes(searchTerm.toLowerCase())
                 )
-                .map((item, index) => (
-                  <Grid item md={4} sm={12} spacing={4} key={index}>
+                .map((filteredItem, index) => (
+                  <Grid item key={index} xs={12} md={6} lg={4}>
                     <Link
+                      style={{ textDecoration: "none" }}
                       href={{
-                        pathname: "/pages/categories",
-                        query: { itemId: item.id },
+                        pathname: "/pages/hello",
+                        query: { itemId: filteredItem.id },
                       }}
                     >
-                      <Card
-                        sx={{
-                          Width: "100%",
-                        }}
-                      >
+                      <Card sx={{ width: "100%" }}>
                         <div
                           style={{
                             display: "flex",
@@ -192,7 +143,7 @@ export default function Home() {
                               marginTop: "12px",
                             }}
                           >
-                            {item.categoryName}
+                            {filteredItem.senderName}
                           </Typography>
                           <Typography
                             variant="h5"
@@ -203,15 +154,14 @@ export default function Home() {
                               marginTop: "12px",
                             }}
                           >
-                            {item.title}
+                            {filteredItem.title}
                           </Typography>
                         </div>
 
                         <CardContent>
-                          {item.image ? (
+                          {filteredItem.image ? (
                             <Image
-                              style={{ width: "100%", height: "100%" }}
-                              src={item.image}
+                              src={filteredItem.image}
                               width={380}
                               height={450}
                               alt="Picture of the author"
@@ -226,13 +176,12 @@ export default function Home() {
                     </Link>
                   </Grid>
                 ))}
-
-              {/* );
-            })} */}
             </Grid>
           )}
         </CardContent>
       </Card>
-    </>
+    </div>
   );
-}
+};
+
+export default PageComponent;
