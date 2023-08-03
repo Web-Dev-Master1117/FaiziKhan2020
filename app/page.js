@@ -163,121 +163,135 @@ export default function Home() {
         </div>
       ) : (
         <Container>
-          {data.map((item, index) => (
-            <Grid item md={12} sm={12} key={index}>
-              <Typography
-                variant="h3"
-                style={{
-                  fontSize: "20px",
-                  fontWeight: "700",
-                  marginTop: "12px",
-                  marginBottom: "20px",
-                }}
-              >
-                {item.categoryName}
-              </Typography>
-              <Card sx={{ width: "100%" }}>
-                <div
+          {data
+            .filter(
+              (item) =>
+                emailData.filter(
+                  (filter) =>
+                    filter.categoryId === item.id &&
+                    filter.title
+                      .toLowerCase()
+                      .includes(searchTerm.toLowerCase())
+                ).length > 0
+            )
+            .map((item, index) => (
+              <Grid item md={12} sm={12} key={index}>
+                <Typography
+                  variant="h3"
                   style={{
-                    display: "flex",
-                    margin: "auto",
-                    maxWidth: "100%",
-                    overflow: "scroll",
-                    flexDirection: "row",
-                    height: "50%",
+                    fontSize: "20px",
+                    fontWeight: "700",
+                    marginTop: "12px",
+                    marginBottom: "20px",
                   }}
                 >
-                  {emailData
-                    .filter(
-                      (filter) =>
-                        filter.categoryId === item.id &&
-                        filter.title
-                          .toLowerCase()
-                          .includes(searchTerm.toLowerCase())
-                    )
-                    .map((filteredItem, filteredIndex) => (
-                      <Grid
-                        columnGap={4}
-                        item
-                        key={filteredIndex}
-                        sm={12}
-                        lg={4}
-                        md={4}
-                      >
-                        <Link
-                          style={{ textDecoration: "none" }}
-                          href={{
-                            pathname: "/pages/hello",
-                            query: { itemId: filteredItem.id },
-                          }}
+                  {item.categoryName}
+                </Typography>
+                <Card
+                  sx={{
+                    width: "100%",
+                    background: "transparent",
+                    boxShadow: "none",
+                  }}
+                >
+                  <div
+                    style={{
+                      display: "flex",
+                      margin: "auto",
+                      flexWrap: "wrap",
+                      flexDirection: "row",
+                      height: "50%",
+                    }}
+                  >
+                    {emailData
+                      .filter(
+                        (filter) =>
+                          filter.categoryId === item.id &&
+                          filter.title
+                            .toLowerCase()
+                            .includes(searchTerm.toLowerCase())
+                      )
+                      .map((filteredItem, filteredIndex) => (
+                        <Grid
+                          columnGap={4}
+                          key={filteredIndex}
+                          sm={6}
+                          lg={4}
+                          md={6}
                         >
-                          <Card
-                            sx={{
-                              width: "70%",
-                              height: "90%",
-                              paddingLeft: "20px",
-                              marginBottom: "20px",
-                              marginTop: "17px",
-                              marginLeft: "3rem",
-                              border: "3px solid",
+                          <Link
+                            style={{ textDecoration: "none" }}
+                            href={{
+                              pathname: "/pages/hello",
+                              query: { itemId: filteredItem.id },
                             }}
                           >
-                            <div
-                              style={{
-                                display: "flex",
-                                margin: "auto",
-                                flexDirection: "column",
+                            <Card
+                              sx={{
+                                width: "80%",
+                                height: "90%",
+                                paddingLeft: "20px",
+                                marginBottom: "20px",
+                                marginTop: "17px",
+                                marginLeft: "3rem",
                               }}
                             >
-                              <Typography
-                                variant="p"
+                              <div
                                 style={{
-                                  fontSize: "10px",
-                                  marginTop: "12px",
+                                  display: "flex",
+                                  margin: "auto",
+                                  flexDirection: "column",
                                 }}
                               >
-                                {filteredItem.time}
-                              </Typography>
-                              <Typography
-                                variant="h3"
-                                style={{
-                                  fontSize: "20px",
-                                  fontWeight: "700",
-                                  textAlign: "center",
-                                  marginTop: "12px",
-                                }}
-                              >
-                                {filteredItem.senderName}
-                              </Typography>
-                              <Typography
-                                variant="h5"
-                                style={{
-                                  fontSize: "15px",
-                                  fontWeight: "700",
-                                  textAlign: "center",
-                                  marginTop: "12px",
-                                }}
-                              >
-                                {filteredItem.title}
-                              </Typography>
-                            </div>
-                            <CardContent>
-                              <Image
-                                style={{ width: "100%", height: "100%" }}
-                                src={filteredItem.image}
-                                width={380}
-                                height={450}
-                                alt="Picture of the author"
-                              />
-                            </CardContent>
-                          </Card>
-                        </Link>
-                      </Grid>
-                    ))}
-                </div>
-              </Card>
-            </Grid>
-          ))}
+                                <Typography
+                                  variant="p"
+                                  style={{
+                                    fontSize: "10px",
+                                    marginTop: "12px",
+                                  }}
+                                >
+                                  {filteredItem.time}
+                                </Typography>
+                                <Typography
+                                  variant="h3"
+                                  style={{
+                                    fontSize: "20px",
+                                    fontWeight: "700",
+                                    textAlign: "center",
+                                    marginTop: "12px",
+                                  }}
+                                >
+                                  {filteredItem.senderName}
+                                </Typography>
+                                <Typography
+                                  variant="h5"
+                                  style={{
+                                    fontSize: "15px",
+                                    fontWeight: "700",
+                                    textAlign: "center",
+                                    marginTop: "12px",
+                                  }}
+                                >
+                                  {filteredItem.title}
+                                </Typography>
+                              </div>
+                              <CardContent>
+                                <Image
+                                  style={{ width: "100%", height: "100%" }}
+                                  src={filteredItem.image}
+                                  width={380}
+                                  height={450}
+                                  alt="Picture of the author"
+                                />
+                              </CardContent>
+                            </Card>
+                          </Link>
+                        </Grid>
+                      ))}
+                  </div>
+                </Card>
+              </Grid>
+            ))}
         </Container>
       )}
     </>
