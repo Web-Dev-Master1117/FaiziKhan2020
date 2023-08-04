@@ -197,8 +197,9 @@ export default function Home() {
                   <div
                     style={{
                       display: "flex",
+                      justifyContent: "space-between",
                       margin: "auto",
-                      flexWrap: "wrap",
+                      overflowX: "scroll",
                       flexDirection: "row",
                       height: "50%",
                     }}
