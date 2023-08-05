@@ -1,5 +1,6 @@
 "use client";
 import { Container, InputAdornment, TextField, Grid } from "@mui/material";
+
 import { useState, useEffect } from "react";
 import SearchIcon from "@mui/icons-material/Search";
 import Box from "@mui/material/Box";
@@ -142,10 +143,8 @@ export default function Home() {
           />
         </div>
       </div>
-      <Container>
-        {" "}
-        <h3>The categories Emails from Netglow</h3>
-      </Container>
+      {/* <Container> */} <h3>The categories Emails from Netglow</h3>
+      {/* </Container> */}
       {loading ? (
         <div
           style={{
@@ -162,7 +161,7 @@ export default function Home() {
           />
         </div>
       ) : (
-        <Container>
+        <>
           {data
             .filter(
               (item) =>
@@ -175,14 +174,14 @@ export default function Home() {
                 ).length > 0
             )
             .map((item, index) => (
-              <Grid item md={12} sm={12} key={index}>
+              <Grid md={12} sm={12} key={index}>
                 <Typography
                   variant="h3"
                   style={{
                     fontSize: "20px",
                     fontWeight: "700",
                     marginTop: "12px",
-                    marginBottom: "20px",
+                    marginBottom: "10px",
                   }}
                 >
                   {item.categoryName}
@@ -197,7 +196,6 @@ export default function Home() {
                   <div
                     style={{
                       display: "flex",
-                      justifyContent: "space-between",
                       margin: "auto",
                       overflowX: "scroll",
                       flexDirection: "row",
@@ -213,13 +211,14 @@ export default function Home() {
                             .includes(searchTerm.toLowerCase())
                       )
                       .map((filteredItem, filteredIndex) => (
-                        <Grid
-                          columnGap={4}
-                          key={filteredIndex}
-                          sm={6}
-                          lg={4}
-                          md={6}
-                        >
+                        // <Grid
+                        //   columnGap={4}
+                        //   key={filteredIndex}
+                        //   sm={6}
+                        //   lg={4}
+                        //   md={6}
+                        // >
+                        <Box style={{ height: "", textAlign: "center" }}>
                           <Link
                             style={{ textDecoration: "none" }}
                             href={{
@@ -229,12 +228,13 @@ export default function Home() {
                           >
                             <Card
                               sx={{
-                                width: "80%",
+                                width: "300px",
                                 height: "90%",
-                                paddingLeft: "20px",
+                                paddingLeft: "11px",
+                                paddingRight: "11px",
                                 marginBottom: "20px",
                                 marginTop: "17px",
-                                marginLeft: "3rem",
+                                marginLeft: "1rem",
                               }}
                             >
                               <div
@@ -254,12 +254,12 @@ export default function Home() {
                                   {filteredItem.time}
                                 </Typography>
                                 <Typography
-                                  variant="h3"
+                                  variant="p"
                                   style={{
-                                    fontSize: "20px",
-                                    fontWeight: "700",
+                                    fontSize: "15px",
                                     textAlign: "center",
                                     marginTop: "12px",
+                                    color: "gray",
                                   }}
                                 >
                                   {filteredItem.senderName}
@@ -276,24 +276,29 @@ export default function Home() {
                                   {filteredItem.title}
                                 </Typography>
                               </div>
-                              <CardContent>
-                                <Image
-                                  style={{ width: "100%", height: "100%" }}
-                                  src={filteredItem.image}
-                                  width={380}
-                                  height={450}
-                                  alt="Picture of the author"
-                                />
-                              </CardContent>
+                              {/* <CardContent> */}
+                              <Image
+                                style={{
+                                  width: "250px",
+                                  height: "330px",
+                                  objectFit: "cover",
+                                }}
+                                src={filteredItem.image}
+                                width={380}
+                                height={380}
+                                alt="Picture of the author"
+                              />
+                              {/* </CardContent> */}
                             </Card>
                           </Link>
-                        </Grid>
+                        </Box>
+                        // </Grid>
                       ))}
                   </div>
                 </Card>
               </Grid>
             ))}
-        </Container>
+        </>
       )}
     </>
   );
