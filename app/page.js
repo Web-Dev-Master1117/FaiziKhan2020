@@ -168,8 +168,8 @@ export default function Home() {
           fontWeight: "500",
         }}
       >
-        Find sales,deals,coupons,and discount codes from 107k+<br></br>brands
-        and retailers
+        Find content, styling, strategies, and tools used by the world’s best creators,
+        influencers, solopreneurs, and entrepreneurs.
       </p>
       {/* </Container> */}
       {loading ? (
