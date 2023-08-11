@@ -19,6 +19,7 @@ import Link from "next/link";
 import Modal from "@mui/material/Modal";
 
 import Image from "next/image";
+import Logo from "../assets/netglow (1).png";
 
 const HtmlToReact = require("html-to-react").Parser;
 
@@ -123,7 +124,18 @@ export default function Home() {
         }}
       >
         <div>
-          <h4>Netglow</h4>
+          <Image
+            style={{
+              width: "112px",
+              height: "112px",
+              marginBottom: "-32px",
+              marginTop: "-25px",
+            }}
+            src={Logo}
+            width={100}
+            height={0}
+            alt="Logo"
+          />
         </div>
         <div>
           <TextField
@@ -143,7 +155,22 @@ export default function Home() {
           />
         </div>
       </div>
-      {/* <Container> */} <h3>The categories Emails from Netglow</h3>
+      {/* <Container> */}{" "}
+      <h3 style={{ fontSize: "25px", fontWeight: "600" }}>
+        A search engine for email newsletters<br></br>
+        <span style={{ color: "#0097ff" }}>by top creators</span>
+      </h3>
+      <p
+        style={{
+          color: "gray",
+          fontSize: "14px",
+          marginTop: "-16px",
+          fontWeight: "500",
+        }}
+      >
+        Find sales,deals,coupons,and discount codes from 107k+<br></br>brands
+        and retailers
+      </p>
       {/* </Container> */}
       {loading ? (
         <div
